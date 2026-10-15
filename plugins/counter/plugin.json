@@ -1,10 +1,16 @@
 {
   "id": "aitbase.counter",
   "name": "Counter",
-  "version": "0.1.0",
-  "api_version": 0,
+  "version": "0.2.0",
+  "api_version": 1,
   "description": "Shows a counter that goes up each time you press RIGHT.",
   "entry": "counter",
-  "ui": "ui/ui.xml",
-  "requested_capabilities": ["ui"]
+  "ui": {
+    "screens": [
+      "counter"
+    ]
+  },
+  "requested_capabilities": [
+    "ui"
+  ]
 }
