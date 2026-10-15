@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  host:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate plugin manifests
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          ok = True
+          for manifest in sorted(pathlib.Path("plugins").glob("*/plugin.json")):
+              data = json.loads(manifest.read_text())
+              for key in ("id", "name", "version", "api_version", "entry", "ui", "requested_capabilities"):
+                  if key not in data:
+                      print(f"{manifest}: missing {key}"); ok = False
+          sys.exit(0 if ok else 1)
+          PY
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build plugins and compile their UI
+        run: cmake --build build -j
