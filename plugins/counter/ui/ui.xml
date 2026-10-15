@@ -1,0 +1,21 @@
+<plugin-ui version="1">
+  <components>
+    <component id="card">
+      <container id="root" background="#101820" padding="8">
+        <label id="title" text="Plugin demo" color="#ffffff">
+          <bind property="text" key="title" type="string"/>
+        </label>
+      </container>
+    </component>
+  </components>
+  <screen id="demo">
+    <container id="main" width="240" height="320" background="#101820" padding="8">
+      <use component="card" id="status"/>
+      <image id="logo" src="assets/logo.rgb565"/>
+      <button id="increment" background="#334455" padding="8">
+        <label id="caption" text="Increment" color="#00e5ff"/>
+        <on event="activate" action="plugin.increment"/>
+      </button>
+    </container>
+  </screen>
+</plugin-ui>
