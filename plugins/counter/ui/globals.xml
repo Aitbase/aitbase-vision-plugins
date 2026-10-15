@@ -1,0 +1,5 @@
+<globals>
+  <images>
+    <file name="logo" src_path="assets/logo.rgb565"/>
+  </images>
+</globals>
