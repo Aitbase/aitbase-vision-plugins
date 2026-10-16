@@ -11,10 +11,13 @@ directory the device's plugin supervisor runs community plugins from:
 Before packaging, it checks the module against the device runner's host ABI
 (aitbase-vision-plugin-sdk docs/wasm-abi.md): only the imports the device provides, the
 required exports, no start section and the size limit. A module that fails here would be
-refused on the device. The zip is deterministic: sorted entries, fixed timestamps and modes.
+refused on the device. The zip is deterministic: sorted entries, fixed timestamps and modes, no compression.
 
 Interim format: the planned package is a signed .avp that the device verifies in memory
 (docs/package-format.md in the SDK); the device can't install those yet.
+
+Entries are stored, not compressed: deflate output differs between zlib builds, and the
+package's SHA-256 must be the same on every machine.
 
 Usage: package_wasm.py <plugin dir> <wasm build dir> <out dir> [--strip <llvm-strip>]
 """
@@ -140,7 +143,7 @@ def build_package(plugin_dir, build_dir, out_dir, strip):
     out_dir.mkdir(parents=True, exist_ok=True)
     package = out_dir / f"{plugin_id}-{version}-wasm.zip"
     prefix = f"aitbase/plugins/{plugin_id}/"
-    with zipfile.ZipFile(package, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    with zipfile.ZipFile(package, "w", zipfile.ZIP_STORED) as archive:
         for directory in ("aitbase/", "aitbase/plugins/", prefix):
             info = zipfile.ZipInfo(directory, FIXED_TIME)
             info.external_attr = (0o40755 << 16) | 0x10
@@ -148,7 +151,6 @@ def build_package(plugin_dir, build_dir, out_dir, strip):
         for name in sorted(files):
             info = zipfile.ZipInfo(prefix + name, FIXED_TIME)
             info.external_attr = 0o100644 << 16
-            info.compress_type = zipfile.ZIP_DEFLATED
             archive.writestr(info, files[name])
     return package, len(module)
 
