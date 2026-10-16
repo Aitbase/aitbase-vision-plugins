@@ -1,5 +1,5 @@
-# Builds every plugin as WebAssembly with a pinned wasi-sdk and packages it for the SD card
-# (tools/package_wasm.py). Called by ci.yml for every change and by release.yml for tags.
+# Builds every plugin as WebAssembly and packages it for the SD card with the SDK's aitbase-plugin
+# CLI (build --wasm, pack --wasm). Called by ci.yml for every change and by release.yml for tags.
 name: wasm-packages
 
 on:
@@ -7,10 +7,6 @@ on:
 
 permissions:
   contents: read
-
-env:
-  WASI_SDK_VERSION: "34.0"
-  WASI_SDK_SHA256: b761e3a0721dbae9c09a0059e5fdb2bf917d1b4a8a7b430fb3b5aafb0984b2c4
 
 jobs:
   build:
@@ -22,26 +18,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install wasi-sdk
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: false
+      # The CLI from the pinned SDK: the same build --wasm / pack --wasm customers run. Its first
+      # build downloads wasi-sdk, checked against the SHA-256 pinned in the SDK; it is cached.
+      - name: Build aitbase-plugin from the SDK
+        run: go -C sdk build -o "$RUNNER_TEMP/bin/aitbase-plugin" ./cmd/aitbase-plugin && echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/aitbase-plugin
+          key: wasi-sdk-${{ runner.os }}-${{ hashFiles('sdk/internal/wasisdk/wasisdk.go') }}
+      - name: Build and package every plugin
         run: |
-          major="${WASI_SDK_VERSION%%.*}"
-          name="wasi-sdk-${WASI_SDK_VERSION}-x86_64-linux"
-          curl -fsSL -o "$RUNNER_TEMP/$name.tar.gz" \
-            "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${major}/$name.tar.gz"
-          echo "${WASI_SDK_SHA256}  $RUNNER_TEMP/$name.tar.gz" | sha256sum -c -
-          tar -xzf "$RUNNER_TEMP/$name.tar.gz" -C "$RUNNER_TEMP"
-          echo "WASI_SDK=$RUNNER_TEMP/$name" >> "$GITHUB_ENV"
-      - name: Build plugins as WebAssembly
-        run: |
-          cmake -S . -B build-wasm \
-            -DCMAKE_TOOLCHAIN_FILE="$WASI_SDK/share/cmake/wasi-sdk-p1.cmake" -DWASI_SDK_PREFIX="$WASI_SDK" \
-            -DCMAKE_BUILD_TYPE=MinSizeRel
-          cmake --build build-wasm -j
-      - name: Package for the SD card
-        run: |
+          mkdir -p dist
           for dir in plugins/*/; do
-            name=$(basename "$dir")
-            python3 -I tools/package_wasm.py "$dir" "build-wasm/plugins/$name" dist --strip "$WASI_SDK/bin/llvm-strip"
+            echo "::group::$dir"
+            aitbase-plugin build --wasm "$dir"
+            # Plugins in this repository are official, so they may use the reserved aitbase.* ids.
+            aitbase-plugin pack --wasm "$dir" --allow-reserved-id --out dist
+            echo "::endgroup::"
           done
           (cd dist && sha256sum *.zip > SHA256SUMS && cat SHA256SUMS)
       - uses: actions/upload-artifact@v4

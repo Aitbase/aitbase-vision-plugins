@@ -8,50 +8,38 @@ These are official example plugins for AITBASE VISION devices, built with the [A
 |---|---|
 | [counter](plugins/counter) | A screen, a bound label, and a button action driven by the RIGHT key. |
 
-## Build
+## Build a plugin for the device
+
+Install the SDK's `aitbase-plugin` CLI and its WebAssembly toolchain once ([Windows and details](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#install)):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Aitbase/aitbase-vision-plugin-sdk/main/install.sh | sh
+```
+
+Then, from a clone with its submodule:
 
 ```sh
 git clone --recursive https://github.com/Aitbase/aitbase-vision-plugins.git
 cd aitbase-vision-plugins
 
-# Host build. It checks that code and UI compile, but can't run without a device.
-cmake -S . -B build && cmake --build build
-
-# Device build: pass the cross toolchain for your device.
-cmake -S . -B build-arm -DCMAKE_TOOLCHAIN_FILE=<toolchain.cmake> && cmake --build build-arm
+aitbase-plugin build --wasm plugins/counter
+aitbase-plugin pack --wasm plugins/counter --allow-reserved-id   # plugins/counter/dist/aitbase.counter-<version>-wasm.zip
 ```
 
-WebAssembly build, with [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) 34 or later:
+Unzip the package at the root of the device's SD card. It creates `aitbase/plugins/<id>/`, and the device runs it while Developer mode is on, which it is by default. `pack --wasm` refuses a module the device would refuse, for example one that uses files or sockets.
+
+- **The SDK:** the CLI uses this repository's `sdk/` submodule, found automatically.
+- **`--allow-reserved-id`:** needed because these official plugins use the `aitbase.*` ids, which the CLI rejects for everyone else.
+- **Interim format:** the zip is what devices run until they install signed `.avp` packages.
+
+### Other builds
 
 ```sh
-cmake -S . -B build-wasm -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk-p1.cmake \
-  -DWASI_SDK_PREFIX=<wasi-sdk> -DCMAKE_BUILD_TYPE=MinSizeRel
-cmake --build build-wasm
-
-# Writes dist/<id>-<version>-wasm.zip; unzip it at the root of the device's SD card.
-python3 tools/package_wasm.py plugins/counter build-wasm/plugins/counter dist --strip <wasi-sdk>/bin/llvm-strip
+aitbase-plugin check plugins/counter --allow-reserved-id   # manifest, ids, file names and screens
+cmake -S . -B build && cmake --build build                  # every plugin, natively: checks code and UI compile
 ```
 
-`package_wasm.py` refuses a module the device would refuse, for example one that imports files or sockets through WASI. The zip holds `aitbase/plugins/<id>/` with `<entry>.wasm`, the compiled screens and `plugin.json`, the directory the device runs community plugins from. This is an interim format until devices install signed `.avp` packages.
-
-Each plugin builds:
-- its program;
-- one `<screen>.ui.json` per screen, which the device validates and renders.
-
-## Check and package
-
-Use the SDK's [`aitbase-plugin`](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md) CLI. Download it from the [SDK releases](https://github.com/Aitbase/aitbase-vision-plugin-sdk/releases), or build the copy matching the pinned SDK with `go -C sdk build -o aitbase-plugin ./cmd/aitbase-plugin`.
-
-```sh
-# Before building: manifest, ids, file names and screens.
-aitbase-plugin check plugins/counter --sdk sdk --allow-reserved-id
-
-# After building: writes dist/aitbase.counter-<version>.avp.
-aitbase-plugin pack plugins/counter --sdk sdk --allow-reserved-id \
-  --build-dir build/plugins/counter --out dist
-```
-
-`--allow-reserved-id` is needed because these official plugins use the `aitbase.*` ids, which `check` rejects for everyone else. CI runs both commands on every plugin and uploads the packages as an artifact. It also builds every plugin as WebAssembly and uploads the SD card zips.
+CI builds and packages every plugin as WebAssembly with the same CLI commands, and uploads the zips.
 
 ## Releases
 
@@ -60,8 +48,7 @@ Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `
 ## Layout
 
 ```
-sdk/                 SDK, as a git submodule pinned to a release or merged commit
-tools/package_wasm.py  WebAssembly packaging for the SD card
+sdk/                 SDK, as a git submodule pinned to a release
 plugins/<name>/
   plugin.json        manifest (draft)
   ui/
@@ -75,10 +62,10 @@ plugins/<name>/
 
 ## Adding a plugin
 
-1. Copy `plugins/counter` to `plugins/<name>`.
+1. Copy `plugins/counter` to `plugins/<name>`. Keep the first lines of its `CMakeLists.txt`, which let `aitbase-plugin build` build the plugin on its own.
 2. Change the target and screen names in its `CMakeLists.txt`.
 3. Change `id` and `name` in `plugin.json`, and `AITBASE_PLUGIN_ID(...)` in `src/` to the same id.
-4. Run `aitbase-plugin check plugins/<name> --sdk sdk --allow-reserved-id`.
+4. Run `aitbase-plugin check plugins/<name> --allow-reserved-id`.
 
 To start a plugin of your own outside this repository, use `aitbase-plugin init` instead. It creates a standalone project with agent instructions.
 
