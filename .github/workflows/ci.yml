@@ -48,3 +48,7 @@ jobs:
           name: plugins
           path: dist/*.avp
           if-no-files-found: error
+
+  # The same WebAssembly packages a release publishes.
+  wasm:
+    uses: ./.github/workflows/wasm-packages.yml
