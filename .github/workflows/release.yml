@@ -1,0 +1,70 @@
+# Publishes a GitHub release with every plugin built as WebAssembly when a version tag (v0.1.0)
+# is pushed. Each plugin keeps its own version from plugin.json; the tag versions the set.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check the tag is a version
+        run: |
+          echo "$GITHUB_REF_NAME" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$' ||
+            { echo "::error::tag $GITHUB_REF_NAME is not vMAJOR.MINOR.PATCH[-prerelease]"; exit 1; }
+
+  wasm:
+    needs: verify
+    uses: ./.github/workflows/wasm-packages.yml
+
+  publish:
+    needs: wasm
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: wasm-packages
+          path: dist
+      - name: Write release notes
+        run: |
+          sdk=$(git -C sdk describe --tags --always)
+          {
+            echo "WebAssembly builds of the plugins in this repository, for devices running development firmware with the plugin supervisor (\`CC_ENABLE_PLUGIN_SUPERVISOR=ON\`)."
+            echo
+            echo "| Plugin | Version | Package |"
+            echo "|---|---|---|"
+            for manifest in plugins/*/plugin.json; do
+              id=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$manifest")
+              version=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$manifest")
+              echo "| \`$id\` | $version | \`$id-$version-wasm.zip\` |"
+            done
+            echo
+            echo "Built with SDK \`$sdk\` and wasi-sdk."
+            echo
+            echo "## Install on a device"
+            echo
+            echo "1. Check the download against \`SHA256SUMS\`."
+            echo "2. Unzip it at the root of the device's SD card. It creates \`aitbase/plugins/<id>/\` with the module, its screens and \`plugin.json\`."
+            echo "3. Start it on the device, for example with \`CC_PLUGIN_AUTOSTART=/mnt/sdcard/aitbase/plugins/<id>\`."
+            echo
+            echo "**Interim format.** These zips are the unpacked layout that development firmware runs today. The planned format is a signed \`.avp\` that the device verifies before running it."
+          } > notes.md
+          cat notes.md
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=
+          case "$GITHUB_REF_NAME" in *-*) prerelease=--prerelease;; esac
+          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/SHA256SUMS \
+            --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag $prerelease

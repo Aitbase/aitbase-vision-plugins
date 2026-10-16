@@ -2,7 +2,7 @@
 
 These are official example plugins for AITBASE VISION devices, built with the [AITBASE VISION Plugin SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk).
 
-> **Status: preview.** Plugins currently run only on devices with development firmware. They use SDK 0.3 (plugin API version 1) and are native binaries. They will move to sandboxed WebAssembly packages as the platform matures, with the same callbacks and calls.
+> **Status: preview.** Plugins run only on devices with development firmware. They use plugin API version 1. The same source builds natively (development bridge, official firmware plugins) or as sandboxed WebAssembly, which is how community plugins run.
 
 | Plugin | What it shows |
 |---|---|
@@ -21,6 +21,19 @@ cmake -S . -B build && cmake --build build
 cmake -S . -B build-arm -DCMAKE_TOOLCHAIN_FILE=<toolchain.cmake> && cmake --build build-arm
 ```
 
+WebAssembly build, with [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) 34 or later:
+
+```sh
+cmake -S . -B build-wasm -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk-p1.cmake \
+  -DWASI_SDK_PREFIX=<wasi-sdk> -DCMAKE_BUILD_TYPE=MinSizeRel
+cmake --build build-wasm
+
+# Writes dist/<id>-<version>-wasm.zip; unzip it at the root of the device's SD card.
+python3 tools/package_wasm.py plugins/counter build-wasm/plugins/counter dist --strip <wasi-sdk>/bin/llvm-strip
+```
+
+`package_wasm.py` refuses a module the device would refuse, for example one that imports files or sockets through WASI. The zip holds `aitbase/plugins/<id>/` with `<entry>.wasm`, the compiled screens and `plugin.json`, the directory the device runs community plugins from. This is an interim format until devices install signed `.avp` packages.
+
 Each plugin builds:
 - its program;
 - one `<screen>.ui.json` per screen, which the device validates and renders.
@@ -38,12 +51,17 @@ aitbase-plugin pack plugins/counter --sdk sdk --allow-reserved-id \
   --build-dir build/plugins/counter --out dist
 ```
 
-`--allow-reserved-id` is needed because these official plugins use the `aitbase.*` ids, which `check` rejects for everyone else. CI runs both commands on every plugin and uploads the packages as an artifact.
+`--allow-reserved-id` is needed because these official plugins use the `aitbase.*` ids, which `check` rejects for everyone else. CI runs both commands on every plugin and uploads the packages as an artifact. It also builds every plugin as WebAssembly and uploads the SD card zips.
+
+## Releases
+
+Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `<id>-<version>-wasm.zip` and `SHA256SUMS` (`.github/workflows/release.yml`). Each plugin keeps its own version from `plugin.json`; bump it when the plugin changes, so the zip names stay unique. Tags with a suffix (`v0.1.0-rc.1`) become prereleases.
 
 ## Layout
 
 ```
-sdk/                 SDK, as a git submodule pinned to a release
+sdk/                 SDK, as a git submodule pinned to a release or merged commit
+tools/package_wasm.py  WebAssembly packaging for the SD card
 plugins/<name>/
   plugin.json        manifest (draft)
   ui/
