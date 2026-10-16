@@ -60,11 +60,25 @@ jobs:
             echo "**Interim format.** These zips are the unpacked layout that the device runs today. The planned format is a signed \`.avp\` that the device verifies before running it."
           } > notes.md
           cat notes.md
-      - name: Create the release
+      - name: Create the release, or add to the one made on the releases page
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          prerelease=
-          case "$GITHUB_REF_NAME" in *-*) prerelease=--prerelease;; esac
-          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/SHA256SUMS \
-            --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag $prerelease
+          tag="$GITHUB_REF_NAME"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            # Publishing a release on GitHub's releases page creates the tag, which starts this
+            # workflow: keep that release's notes, add ours below them once, and attach the packages.
+            gh release view "$tag" --json body --jq .body > existing.md
+            if grep -q '^## Install on a device' existing.md; then
+              cp existing.md combined.md
+            else
+              { cat existing.md; echo; echo; cat notes.md; } > combined.md
+            fi
+            gh release edit "$tag" --notes-file combined.md
+            gh release upload "$tag" dist/*.zip dist/SHA256SUMS --clobber
+          else
+            prerelease=
+            case "$tag" in *-*) prerelease=--prerelease;; esac
+            gh release create "$tag" dist/*.zip dist/SHA256SUMS \
+              --title "$tag" --notes-file notes.md --verify-tag $prerelease
+          fi
