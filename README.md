@@ -48,7 +48,7 @@ Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `
 ## Layout
 
 ```
-sdk/                 SDK, as a git submodule pinned to a release
+sdk/                 SDK, as a git submodule pinned to a release (v0.4.0)
 plugins/<name>/
   plugin.json        manifest (draft)
   ui/
