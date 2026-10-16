@@ -39,7 +39,7 @@ jobs:
         run: |
           sdk=$(git -C sdk describe --tags --always)
           {
-            echo "WebAssembly builds of the plugins in this repository, for devices running development firmware with the plugin supervisor (\`CC_ENABLE_PLUGIN_SUPERVISOR=ON\`)."
+            echo "WebAssembly builds of the plugins in this repository, for devices with the plugin runtime and Developer mode on (the default)."
             echo
             echo "| Plugin | Version | Package |"
             echo "|---|---|---|"
@@ -55,9 +55,9 @@ jobs:
             echo
             echo "1. Check the download against \`SHA256SUMS\`."
             echo "2. Unzip it at the root of the device's SD card. It creates \`aitbase/plugins/<id>/\` with the module, its screens and \`plugin.json\`."
-            echo "3. Start it on the device, for example with \`CC_PLUGIN_AUTOSTART=/mnt/sdcard/aitbase/plugins/<id>\`."
+            echo "3. Insert the card. The device starts the plugin a few seconds after the card mounts; its log is \`aitbase/logs/<id>.log\` on the card."
             echo
-            echo "**Interim format.** These zips are the unpacked layout that development firmware runs today. The planned format is a signed \`.avp\` that the device verifies before running it."
+            echo "**Interim format.** These zips are the unpacked layout that the device runs today. The planned format is a signed \`.avp\` that the device verifies before running it."
           } > notes.md
           cat notes.md
       - name: Create the release
