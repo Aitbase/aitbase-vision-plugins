@@ -10,24 +10,23 @@ This is the smallest AITBASE VISION plugin. It shows **Count: N** and adds 1 eac
 | `src/main.c` | Callbacks: opens the screen on start, then sets the title on `opened` and on each `action`. |
 | `plugin.json` | Manifest draft. The fields will change once packaging lands. |
 
-## Run on a development device
+## Run on a device
 
-The device must run firmware built with `CC_ENABLE_PLUGIN_UI=ON` and `CC_ENABLE_PLUGIN_DEV_BRIDGE=ON`.
-
-1. Copy `counter` and `counter.ui.json` from your build directory (`build-arm/plugins/counter/`) to the same directory on the device.
-2. With the device on its home screen, run:
+From the repository root (see the top-level README to install the CLI):
 
 ```sh
-./counter
+aitbase-plugin build --wasm plugins/counter
+aitbase-plugin pack --wasm plugins/counter --allow-reserved-id --out dist
 ```
 
-The runtime loads `counter.ui.json` from the binary's directory. Set `AITBASE_PLUGIN_UI_DIR` to load it from somewhere else.
+Unzip `dist/aitbase.counter-<version>-wasm.zip` at the root of the device's SD card. It creates `aitbase/plugins/aitbase.counter/`. With Developer mode on (the default; Device Console → Advanced → Plugins), the device starts it a few seconds after the card mounts, and starts it again whenever its files change. Its log is `aitbase/logs/aitbase.counter.log` on the card.
+
+To try it as a community plugin, change the id to your own, for example `yourname.counter`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and drop `--allow-reserved-id`.
 
 ## What you should see
 
 1. The screen shows `Count: 0`.
 2. Each RIGHT press adds 1 to the count.
-3. A LEFT long press, or the voice assistant starting, closes the screen. The plugin then prints `screen preempted` and exits.
-4. Ctrl+C on the plugin closes the screen.
+3. A LEFT long press, or the voice assistant starting, closes the screen. The plugin then logs `screen preempted` and exits.
 
-The plugin logs to stderr, for example `[aitbase.counter] info: increment -> 1`.
+The plugin's log lines look like `[aitbase.counter] info: increment -> 1`.
