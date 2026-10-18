@@ -5,15 +5,6 @@ name: wasm-packages
 
 on:
   workflow_call:
-    inputs:
-      release:
-        description: Packages for a release; they must be signed with the project's key.
-        type: boolean
-        default: false
-    secrets:
-      AITBASE_SIGNING_KEY:
-        description: The project's package signing key (PEM), as `aitbase-plugin key` creates it.
-        required: false
 
 permissions:
   contents: read
@@ -42,20 +33,6 @@ jobs:
         with:
           path: ~/.cache/aitbase-plugin
           key: aitbase-plugin-${{ runner.os }}-${{ hashFiles('SDK_VERSION') }}
-      # A device trusts the first key it sees for a plugin id and refuses updates signed with
-      # another, so releases are signed with the project's key. Other builds use a throwaway key.
-      - name: Signing key
-        env:
-          KEY: ${{ secrets.AITBASE_SIGNING_KEY }}
-          RELEASE: ${{ inputs.release }}
-        run: |
-          if [ -n "$KEY" ]; then
-            (umask 077 && printf '%s\n' "$KEY" > "$RUNNER_TEMP/signing-key.pem")
-          elif [ "$RELEASE" = true ]; then
-            echo "::error::set the AITBASE_SIGNING_KEY secret; devices would refuse every later update of packages signed with a throwaway key"
-            exit 1
-          fi
-          echo "AITBASE_SIGNING_KEY=$RUNNER_TEMP/signing-key.pem" >> "$GITHUB_ENV"
       - name: Build and package every plugin
         run: |
           mkdir -p dist

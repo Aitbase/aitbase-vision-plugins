@@ -21,10 +21,6 @@ jobs:
   wasm:
     needs: verify
     uses: ./.github/workflows/wasm-packages.yml
-    with:
-      release: true
-    secrets:
-      AITBASE_SIGNING_KEY: ${{ secrets.AITBASE_SIGNING_KEY }}
 
   publish:
     needs: wasm
