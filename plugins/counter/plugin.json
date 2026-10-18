@@ -1,5 +1,5 @@
 {
-  "id": "aitbase.counter",
+  "id": "example.counter",
   "name": "Counter",
   "version": "0.2.0",
   "api_version": 1,

@@ -39,8 +39,7 @@ jobs:
           for dir in plugins/*/; do
             echo "::group::$dir"
             aitbase-plugin build --wasm "$dir"
-            # Plugins in this repository are official, so they may use the reserved aitbase.* ids.
-            aitbase-plugin pack --wasm "$dir" --allow-reserved-id --out dist
+            aitbase-plugin pack --wasm "$dir" --out dist
             echo "::endgroup::"
           done
           (cd dist && sha256sum *.avp > SHA256SUMS && cat SHA256SUMS)
