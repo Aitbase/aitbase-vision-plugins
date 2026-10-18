@@ -1,0 +1,11 @@
+<!-- No buttons: the plugin reacts to the device's buttons itself (AITBASE_EVENT_KEY). -->
+<screen>
+  <view width="240" height="320" style_bg_color="#surface" style_pad_all="8">
+    <lv_label name="time" x="8" y="60" text="00:00.0" style_text_color="#on_surface" bind_text="title"/>
+    <lv_label name="state" x="8" y="100" text="Stopped" style_text_color="#accent" bind_text="title"/>
+    <lv_label name="lap" x="8" y="140" text="" style_text_color="#on_surface" bind_text="title"/>
+    <lv_label name="help1" x="8" y="220" text="RIGHT: start / stop" style_text_color="#on_surface"/>
+    <lv_label name="help2" x="8" y="244" text="Hold RIGHT: reset" style_text_color="#on_surface"/>
+    <lv_label name="help3" x="8" y="268" text="LEFT: lap" style_text_color="#on_surface"/>
+  </view>
+</screen>
