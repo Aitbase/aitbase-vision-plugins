@@ -1,6 +1,6 @@
 # AITBASE VISION Plugins
 
-These are official example plugins for AITBASE VISION devices, built with the [AITBASE VISION Plugin SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk).
+These are example plugins for AITBASE VISION devices, built with the [AITBASE VISION Plugin SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk).
 
 > **Status: preview.** Plugins run only on devices with development firmware. They use plugin API version 1. The same source builds natively (development bridge, official firmware plugins) or as sandboxed WebAssembly, which is how community plugins run.
 
@@ -23,18 +23,18 @@ git clone https://github.com/Aitbase/aitbase-vision-plugins.git
 cd aitbase-vision-plugins
 
 aitbase-plugin build --wasm plugins/counter
-aitbase-plugin pack --wasm plugins/counter --allow-reserved-id   # plugins/counter/dist/aitbase.counter-<version>.avp
+aitbase-plugin pack --wasm plugins/counter   # plugins/counter/dist/example.counter-<version>.avp
 ```
 
 Copy the `.avp` into `aitbase/plugins/` on the device's SD card, and the device runs it. `pack --wasm` refuses a module the device would refuse, for example one that uses files or sockets, and signs the package with your key (see `aitbase-plugin key`).
 
 - **The SDK:** the one built into the CLI ([Which SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#which-sdk)). CI pins it in `SDK_VERSION`; `aitbase-plugin version` shows yours.
-- **`--allow-reserved-id`:** needed because these official plugins use the `aitbase.*` ids, which the CLI rejects for everyone else.
+- **Ids:** the examples use the `example.*` namespace. Devices refuse `aitbase.*` ids on the SD card; that namespace is for official plugins, which ship in the firmware.
 
 ### Other builds
 
 ```sh
-aitbase-plugin check plugins/counter --allow-reserved-id   # manifest, ids, file names and screens
+aitbase-plugin check plugins/counter   # manifest, ids, file names and screens
 cmake -S . -B build -DAITBASE_SDK_DIR="$(aitbase-plugin sdk)" && cmake --build build   # every plugin, natively
 ```
 
@@ -64,7 +64,7 @@ plugins/<name>/
 1. Copy `plugins/counter` to `plugins/<name>`. Keep the first lines of its `CMakeLists.txt`, which let `aitbase-plugin build` build the plugin on its own.
 2. Change the target and screen names in its `CMakeLists.txt`.
 3. Change `id` and `name` in `plugin.json`, and `AITBASE_PLUGIN_ID(...)` in `src/` to the same id.
-4. Run `aitbase-plugin check plugins/<name> --allow-reserved-id`.
+4. Run `aitbase-plugin check plugins/<name>`.
 
 To start a plugin of your own outside this repository, use `aitbase-plugin init` instead. It creates a standalone project with agent instructions.
 

@@ -9,7 +9,7 @@
 
 #include "aitbase_plugin.h"
 
-AITBASE_PLUGIN_ID("aitbase.counter");
+AITBASE_PLUGIN_ID("example.counter");
 
 /* Names from ui/screens/counter.xml: <card name="status"> holds <lv_label name="title">. */
 #define SCREEN "counter"

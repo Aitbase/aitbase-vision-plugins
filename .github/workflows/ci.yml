@@ -27,12 +27,11 @@ jobs:
           GOBIN="$RUNNER_TEMP/bin" go install "github.com/Aitbase/aitbase-vision-plugin-sdk/cmd/aitbase-plugin@$(cat SDK_VERSION)"
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
           "$RUNNER_TEMP/bin/aitbase-plugin" version
-      # Plugins in this repository are official, so they may use the reserved aitbase.* ids.
       - name: Check plugins
         run: |
           for dir in plugins/*/; do
             echo "::group::check $dir"
-            aitbase-plugin check "$dir" --allow-reserved-id
+            aitbase-plugin check "$dir"
             echo "::endgroup::"
           done
       - name: Configure
@@ -43,7 +42,7 @@ jobs:
         run: |
           for dir in plugins/*/; do
             name=$(basename "$dir")
-            aitbase-plugin pack "$dir" --allow-reserved-id --build-dir "build/plugins/$name" --out dist
+            aitbase-plugin pack "$dir" --build-dir "build/plugins/$name" --out dist
           done
       - uses: actions/upload-artifact@v4
         with:
