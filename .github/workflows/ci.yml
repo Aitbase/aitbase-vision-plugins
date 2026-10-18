@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -22,31 +20,35 @@ jobs:
         with:
           go-version: "1.22"
           cache: false
-      # Built from the pinned submodule, so the CLI always matches the SDK the plugins use.
-      - name: Build aitbase-plugin from the SDK
-        run: go -C sdk build -o "$RUNNER_TEMP/bin/aitbase-plugin" ./cmd/aitbase-plugin && echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      # The CLI carries the SDK the plugins build with. SDK_VERSION pins it: a release tag, or a
+      # commit of the SDK before its release.
+      - name: Install aitbase-plugin
+        run: |
+          GOBIN="$RUNNER_TEMP/bin" go install "github.com/Aitbase/aitbase-vision-plugin-sdk/cmd/aitbase-plugin@$(cat SDK_VERSION)"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/bin/aitbase-plugin" version
       # Plugins in this repository are official, so they may use the reserved aitbase.* ids.
       - name: Check plugins
         run: |
           for dir in plugins/*/; do
             echo "::group::check $dir"
-            aitbase-plugin check "$dir" --sdk sdk --allow-reserved-id
+            aitbase-plugin check "$dir" --allow-reserved-id
             echo "::endgroup::"
           done
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DAITBASE_SDK_DIR="$(aitbase-plugin sdk)"
       - name: Build plugins and compile their UI
         run: cmake --build build -j
       - name: Package plugins
         run: |
           for dir in plugins/*/; do
             name=$(basename "$dir")
-            aitbase-plugin pack "$dir" --sdk sdk --allow-reserved-id --build-dir "build/plugins/$name" --out dist
+            aitbase-plugin pack "$dir" --allow-reserved-id --build-dir "build/plugins/$name" --out dist
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: plugins
-          path: dist/*.avp
+          name: plugins-native
+          path: dist/*-native.zip
           if-no-files-found: error
 
   # The same WebAssembly packages a release publishes.
