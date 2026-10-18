@@ -19,7 +19,7 @@ aitbase-plugin build --wasm plugins/counter
 aitbase-plugin pack --wasm plugins/counter --allow-reserved-id --out dist
 ```
 
-Unzip `dist/aitbase.counter-<version>-wasm.zip` at the root of the device's SD card. It creates `aitbase/plugins/aitbase.counter/`. With Developer mode on (the default; Device Console → Advanced → Plugins), the device starts it a few seconds after the card mounts, and starts it again whenever its files change. Its log is `aitbase/logs/aitbase.counter.log` on the card.
+Copy `dist/aitbase.counter-<version>.avp` into `aitbase/plugins/` on the device's SD card. The device checks the signature and starts the plugin after the card mounts. Its log is `aitbase/logs/aitbase.counter.log` on the card.
 
 To try it as a community plugin, change the id to your own, for example `yourname.counter`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and drop `--allow-reserved-id`.
 

@@ -1,9 +1,19 @@
-# Builds every plugin as WebAssembly and packages it for the SD card with the SDK's aitbase-plugin
-# CLI (build --wasm, pack --wasm). Called by ci.yml for every change and by release.yml for tags.
+# Builds every plugin as WebAssembly and packages it as a signed .avp for the SD card with the
+# SDK's aitbase-plugin CLI (build --wasm, pack --wasm). Called by ci.yml for every change and by
+# release.yml for tags.
 name: wasm-packages
 
 on:
   workflow_call:
+    inputs:
+      release:
+        description: Packages for a release; they must be signed with the project's key.
+        type: boolean
+        default: false
+    secrets:
+      AITBASE_SIGNING_KEY:
+        description: The project's package signing key (PEM), as `aitbase-plugin key` creates it.
+        required: false
 
 permissions:
   contents: read
@@ -13,8 +23,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -22,14 +30,32 @@ jobs:
         with:
           go-version: "1.22"
           cache: false
-      # The CLI from the pinned SDK: the same build --wasm / pack --wasm customers run. Its first
-      # build downloads wasi-sdk, checked against the SHA-256 pinned in the SDK; it is cached.
-      - name: Build aitbase-plugin from the SDK
-        run: go -C sdk build -o "$RUNNER_TEMP/bin/aitbase-plugin" ./cmd/aitbase-plugin && echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      # The CLI carries the SDK the plugins build with. SDK_VERSION pins it: a release tag, or a
+      # commit of the SDK before its release.
+      - name: Install aitbase-plugin
+        run: |
+          GOBIN="$RUNNER_TEMP/bin" go install "github.com/Aitbase/aitbase-vision-plugin-sdk/cmd/aitbase-plugin@$(cat SDK_VERSION)"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/bin/aitbase-plugin" version
+      # The first build --wasm downloads wasi-sdk, checked against the SHA-256 pinned in the SDK.
       - uses: actions/cache@v4
         with:
           path: ~/.cache/aitbase-plugin
-          key: wasi-sdk-${{ runner.os }}-${{ hashFiles('sdk/internal/wasisdk/wasisdk.go') }}
+          key: aitbase-plugin-${{ runner.os }}-${{ hashFiles('SDK_VERSION') }}
+      # A device trusts the first key it sees for a plugin id and refuses updates signed with
+      # another, so releases are signed with the project's key. Other builds use a throwaway key.
+      - name: Signing key
+        env:
+          KEY: ${{ secrets.AITBASE_SIGNING_KEY }}
+          RELEASE: ${{ inputs.release }}
+        run: |
+          if [ -n "$KEY" ]; then
+            (umask 077 && printf '%s\n' "$KEY" > "$RUNNER_TEMP/signing-key.pem")
+          elif [ "$RELEASE" = true ]; then
+            echo "::error::set the AITBASE_SIGNING_KEY secret; devices would refuse every later update of packages signed with a throwaway key"
+            exit 1
+          fi
+          echo "AITBASE_SIGNING_KEY=$RUNNER_TEMP/signing-key.pem" >> "$GITHUB_ENV"
       - name: Build and package every plugin
         run: |
           mkdir -p dist
@@ -40,11 +66,11 @@ jobs:
             aitbase-plugin pack --wasm "$dir" --allow-reserved-id --out dist
             echo "::endgroup::"
           done
-          (cd dist && sha256sum *.zip > SHA256SUMS && cat SHA256SUMS)
+          (cd dist && sha256sum *.avp > SHA256SUMS && cat SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
           name: wasm-packages
           path: |
-            dist/*.zip
+            dist/*.avp
             dist/SHA256SUMS
           if-no-files-found: error
