@@ -21,6 +21,10 @@ jobs:
   wasm:
     needs: verify
     uses: ./.github/workflows/wasm-packages.yml
+    with:
+      release: true
+    secrets:
+      AITBASE_SIGNING_KEY: ${{ secrets.AITBASE_SIGNING_KEY }}
 
   publish:
     needs: wasm
@@ -29,24 +33,22 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - uses: actions/download-artifact@v4
         with:
           name: wasm-packages
           path: dist
       - name: Write release notes
         run: |
-          sdk=$(git -C sdk describe --tags --always)
+          sdk=$(cat SDK_VERSION)
           {
-            echo "WebAssembly builds of the plugins in this repository, for devices with the plugin runtime and Developer mode on (the default)."
+            echo "Signed WebAssembly packages of the plugins in this repository, for devices with the plugin package loader."
             echo
             echo "| Plugin | Version | Package |"
             echo "|---|---|---|"
             for manifest in plugins/*/plugin.json; do
               id=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$manifest")
               version=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$manifest")
-              echo "| \`$id\` | $version | \`$id-$version-wasm.zip\` |"
+              echo "| \`$id\` | $version | \`$id-$version.avp\` |"
             done
             echo
             echo "Built with SDK \`$sdk\` and wasi-sdk."
@@ -54,10 +56,8 @@ jobs:
             echo "## Install on a device"
             echo
             echo "1. Check the download against \`SHA256SUMS\`."
-            echo "2. Unzip it at the root of the device's SD card. It creates \`aitbase/plugins/<id>/\` with the module, its screens and \`plugin.json\`."
-            echo "3. Insert the card. The device starts the plugin a few seconds after the card mounts; its log is \`aitbase/logs/<id>.log\` on the card."
-            echo
-            echo "**Interim format.** These zips are the unpacked layout that the device runs today. The planned format is a signed \`.avp\` that the device verifies before running it."
+            echo "2. Copy the \`.avp\` into \`aitbase/plugins/\` on the device's SD card (create the folders if needed)."
+            echo "3. Insert the card. The device checks the signature and starts the plugin; its log is \`aitbase/logs/<id>.log\` on the card."
           } > notes.md
           cat notes.md
       - name: Create the release, or add to the one made on the releases page
@@ -75,10 +75,10 @@ jobs:
               { cat existing.md; echo; echo; cat notes.md; } > combined.md
             fi
             gh release edit "$tag" --notes-file combined.md
-            gh release upload "$tag" dist/*.zip dist/SHA256SUMS --clobber
+            gh release upload "$tag" dist/*.avp dist/SHA256SUMS --clobber
           else
             prerelease=
             case "$tag" in *-*) prerelease=--prerelease;; esac
-            gh release create "$tag" dist/*.zip dist/SHA256SUMS \
+            gh release create "$tag" dist/*.avp dist/SHA256SUMS \
               --title "$tag" --notes-file notes.md --verify-tag $prerelease
           fi

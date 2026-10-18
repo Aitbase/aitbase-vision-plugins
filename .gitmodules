@@ -1,3 +1,0 @@
-[submodule "sdk"]
-	path = sdk
-	url = https://github.com/Aitbase/aitbase-vision-plugin-sdk.git
