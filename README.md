@@ -42,9 +42,7 @@ CI builds and packages every plugin as WebAssembly with the same CLI commands, a
 
 ## Releases
 
-Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `<id>-<version>.avp` and `SHA256SUMS` (`.github/workflows/release.yml`). Each plugin keeps its own version from `plugin.json`; bump it when the plugin changes, so the package names stay unique.
-
-Releases are signed with the project's key, from the `AITBASE_SIGNING_KEY` repository secret (the PEM file `aitbase-plugin key` creates); the release fails without it. A device trusts the first key it sees for a plugin id and refuses updates signed with another, so never replace that key. Tags with a suffix (`v0.1.0-rc.1`) become prereleases.
+Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `<id>-<version>.avp` and `SHA256SUMS` (`.github/workflows/release.yml`). Each plugin keeps its own version from `plugin.json`; bump it when the plugin changes, so the package names stay unique. Tags with a suffix (`v0.1.0-rc.1`) become prereleases.
 
 ## Layout
 
