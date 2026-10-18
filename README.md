@@ -10,45 +10,44 @@ These are official example plugins for AITBASE VISION devices, built with the [A
 
 ## Build a plugin for the device
 
-Install the SDK's `aitbase-plugin` CLI and its WebAssembly toolchain once ([Windows and details](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#install)):
+Install the SDK's `aitbase-plugin` CLI and its WebAssembly toolchain once. The CLI carries the SDK, so there is nothing else to fetch ([Windows and details](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#install)):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Aitbase/aitbase-vision-plugin-sdk/main/install.sh | sh
 ```
 
-Then, from a clone with its submodule:
+Then, from a clone:
 
 ```sh
-git clone --recursive https://github.com/Aitbase/aitbase-vision-plugins.git
+git clone https://github.com/Aitbase/aitbase-vision-plugins.git
 cd aitbase-vision-plugins
 
 aitbase-plugin build --wasm plugins/counter
-aitbase-plugin pack --wasm plugins/counter --allow-reserved-id   # plugins/counter/dist/aitbase.counter-<version>-wasm.zip
+aitbase-plugin pack --wasm plugins/counter --allow-reserved-id   # plugins/counter/dist/aitbase.counter-<version>.avp
 ```
 
-Unzip the package at the root of the device's SD card. It creates `aitbase/plugins/<id>/`, and the device runs it while Developer mode is on, which it is by default. `pack --wasm` refuses a module the device would refuse, for example one that uses files or sockets.
+Copy the `.avp` into `aitbase/plugins/` on the device's SD card, and the device runs it. `pack --wasm` refuses a module the device would refuse, for example one that uses files or sockets, and signs the package with your key (see `aitbase-plugin key`).
 
-- **The SDK:** the CLI uses this repository's `sdk/` submodule, found automatically.
+- **The SDK:** the one built into the CLI ([Which SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#which-sdk)). CI pins it in `SDK_VERSION`; `aitbase-plugin version` shows yours.
 - **`--allow-reserved-id`:** needed because these official plugins use the `aitbase.*` ids, which the CLI rejects for everyone else.
-- **Interim format:** the zip is what devices run until they install signed `.avp` packages.
 
 ### Other builds
 
 ```sh
 aitbase-plugin check plugins/counter --allow-reserved-id   # manifest, ids, file names and screens
-cmake -S . -B build && cmake --build build                  # every plugin, natively: checks code and UI compile
+cmake -S . -B build -DAITBASE_SDK_DIR="$(aitbase-plugin sdk)" && cmake --build build   # every plugin, natively
 ```
 
-CI builds and packages every plugin as WebAssembly with the same CLI commands, and uploads the zips.
+CI builds and packages every plugin as WebAssembly with the same CLI commands, and uploads the packages.
 
 ## Releases
 
-Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `<id>-<version>-wasm.zip` and `SHA256SUMS` (`.github/workflows/release.yml`). Each plugin keeps its own version from `plugin.json`; bump it when the plugin changes, so the zip names stay unique. Tags with a suffix (`v0.1.0-rc.1`) become prereleases.
+Pushing a version tag (`v0.1.0`) publishes a GitHub release with each plugin's `<id>-<version>.avp` and `SHA256SUMS` (`.github/workflows/release.yml`). Each plugin keeps its own version from `plugin.json`; bump it when the plugin changes, so the package names stay unique. Tags with a suffix (`v0.1.0-rc.1`) become prereleases.
 
 ## Layout
 
 ```
-sdk/                 SDK, as a git submodule pinned to a release (v0.4.0)
+SDK_VERSION          SDK (CLI) release that CI builds with
 plugins/<name>/
   plugin.json        manifest (draft)
   ui/
