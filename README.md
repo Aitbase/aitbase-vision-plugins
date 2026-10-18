@@ -7,6 +7,7 @@ These are example plugins for AITBASE VISION devices, built with the [AITBASE VI
 | Plugin | What it shows |
 |---|---|
 | [counter](plugins/counter) | A screen, a bound label, and a button action driven by the RIGHT key. |
+| [stopwatch](plugins/stopwatch) | A screen without buttons, driven by the device's buttons (`AITBASE_EVENT_KEY`), with a timer and the monotonic clock. Needs SDK 0.8.0. |
 
 ## Build a plugin for the device
 
