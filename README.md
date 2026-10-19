@@ -2,7 +2,7 @@
 
 These are example plugins for AITBASE VISION devices, built with the [AITBASE VISION Plugin SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk).
 
-> **Status: preview.** Plugins run only on devices with development firmware. They use plugin API version 1. The same source builds natively (development bridge, official firmware plugins) or as sandboxed WebAssembly, which is how community plugins run.
+> **Status: preview.** Plugins run only on devices with development firmware. They are built with SDK 0.11, which needs nothing in `requested_capabilities`: every plugin may use every capability (device decision D32). Devices from before D32 still need that list. They use plugin API version 1. The same source builds natively (development bridge, official firmware plugins) or as sandboxed WebAssembly, which is how community plugins run.
 
 | Plugin | What it shows |
 |---|---|

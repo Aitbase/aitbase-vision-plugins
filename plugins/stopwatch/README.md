@@ -15,7 +15,7 @@ A long press always comes after a press of the same button, because the device c
 |---|---|
 | `ui/screens/stopwatch.xml` | The screen: the time, the state and the last lap (labels bound to the `title` subject), and help text. No buttons, so nothing takes focus. |
 | `src/main.c` | Callbacks: reacts to `AITBASE_EVENT_KEY`, refreshes the time every 100 ms with a timer while running, and measures with the monotonic clock. |
-| `plugin.json` | Manifest: only the `ui` capability. |
+| `plugin.json` | Manifest: the id, name, entry and screen. Nothing to request (SDK 0.11). |
 
 Needs SDK 0.8.0 or later and device firmware with button events (D20). On older firmware the screen opens but never reacts.
 

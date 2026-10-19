@@ -4,10 +4,10 @@ Answers the device's voice assistant, with no screen of its own (assistant tools
 
 | File | Purpose |
 |---|---|
-| `plugin.json` | Manifest: `assistant_tools` declares `today {city: string, at most 40 bytes}`; capabilities `http` and `assistant.tools`. |
+| `plugin.json` | Manifest: `assistant_tools` declares `today {city: string, at most 40 bytes}`. Nothing to request: plugins may use every capability (SDK 0.11). |
 | `src/main.c` | Callbacks: on `AITBASE_EVENT_TOOL_CALL` it reads `city` with `aitbase_tool_arg_string`, requests `https://wttr.in/<city>?format=3`, and answers with `aitbase_tool_reply` when the `RESULT` (or an `ERROR`) arrives. Started any other way, it stops at once. |
 
-Needs SDK 0.10.0 or later, and device firmware with assistant tools (D31). Older firmware ignores `assistant_tools`, so the plugin never gets called.
+Needs SDK 0.11.0 or later, and device firmware with assistant tools (D31) and the open plugin model (D32). Older firmware ignores `assistant_tools`, so the plugin never gets called.
 
 ## Run on a device
 
