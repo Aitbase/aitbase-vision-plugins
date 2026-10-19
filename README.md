@@ -8,6 +8,7 @@ These are example plugins for AITBASE VISION devices, built with the [AITBASE VI
 |---|---|
 | [counter](plugins/counter) | A screen, a bound label, and a button action driven by the RIGHT key. |
 | [stopwatch](plugins/stopwatch) | A screen without buttons, driven by the device's buttons (`AITBASE_EVENT_KEY`), with a timer and the monotonic clock. Needs SDK 0.8.0. |
+| [weather](plugins/weather) | No screen: answers the voice assistant through an assistant tool (`assistant_tools`, `AITBASE_EVENT_TOOL_CALL`) with an HTTP request. Needs SDK 0.10.0. |
 
 ## Build a plugin for the device
 
