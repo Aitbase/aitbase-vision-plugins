@@ -1,7 +1,7 @@
 {
   "id": "example.stopwatch",
   "name": "Stopwatch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "api_version": 1,
   "description": "A stopwatch driven by the buttons: RIGHT starts and stops, hold RIGHT to reset, LEFT records a lap.",
   "entry": "stopwatch",
@@ -9,8 +9,5 @@
     "screens": [
       "stopwatch"
     ]
-  },
-  "requested_capabilities": [
-    "ui"
-  ]
+  }
 }
