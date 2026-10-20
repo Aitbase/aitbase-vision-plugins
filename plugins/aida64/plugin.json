@@ -1,0 +1,14 @@
+{
+  "id": "example.aida64",
+  "name": "AIDA64",
+  "version": "0.1.0",
+  "api_version": 1,
+  "description": "A home screen face with a PC's RAM, CPU and disk, pushed by the AIDA64 client over the local network.",
+  "entry": "aida64",
+  "ui": {
+    "screens": [
+      "face"
+    ]
+  },
+  "idle_face": "face"
+}
