@@ -1,0 +1,46 @@
+<screen>
+  <!-- A PC's RAM, CPU and disk. The AIDA64 client writes face.1 to face.13 (see README.md). -->
+  <view width="240" style_bg_color="#000000" style_pad_all="4" style_pad_row="6">
+    <lv_obj name="ram" width="228" style_bg_color="#1a1a1a" style_border_color="#3a3a3a" style_border_width="1" style_radius="6" style_pad_top="6" style_pad_bottom="6" style_pad_left="10" style_pad_right="10" style_pad_row="4">
+      <lv_obj name="ram_load" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_label name="ram_title" text="RAM" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_bar name="ram_bar" width="110" height="7" min_value="0" max_value="100" style_radius="4" style_bg_color="#3a3a3a" style_bg_color-indicator="#ff6a00" bind_value="face.4"/>
+        <lv_label name="ram_load_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.4"/>
+      </lv_obj>
+      <lv_obj name="ram_used" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_label name="ram_used_key" text="Used" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_label name="ram_used_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.2"/>
+      </lv_obj>
+      <lv_obj name="ram_speed" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_label name="ram_speed_key" text="Speed" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_label name="ram_speed_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.1"/>
+      </lv_obj>
+    </lv_obj>
+    <lv_obj name="cpu" width="228" style_bg_color="#1a1a1a" style_border_color="#3a3a3a" style_border_width="1" style_radius="6" style_pad_top="6" style_pad_bottom="6" style_pad_left="10" style_pad_right="10" style_pad_row="4">
+      <lv_label name="cpu_name" text="CPU" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.5"/>
+      <lv_obj name="cpu_main" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_arc name="cpu_arc" width="72" height="72" min_value="0" max_value="100" style_arc_width="8" style_arc_color-indicator="#ff6a00" bind_value="face.6"/>
+        <lv_obj name="cpu_stats" width="128" style_bg_opa="0" style_pad_all="0" style_pad_row="2">
+          <lv_label name="cpu_load" text="--" style_text_font="24" style_text_color="#f0f0f0" bind_text="face.6"/>
+          <lv_obj name="cpu_temp" width="128" flex_flow="row" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="4">
+            <lv_bar name="cpu_temp_bar" width="60" height="6" min_value="0" max_value="100" style_radius="4" style_bg_color="#3a3a3a" style_bg_color-indicator="#ff6a00" bind_value="face.7"/>
+            <lv_label name="cpu_temp_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.7"/>
+          </lv_obj>
+          <lv_label name="cpu_clock" text="--" style_text_font="16" style_text_color="#a0a0a0" bind_text="face.8"/>
+          <lv_label name="cpu_fan" text="--" style_text_font="16" style_text_color="#a0a0a0" bind_text="face.9"/>
+        </lv_obj>
+      </lv_obj>
+    </lv_obj>
+    <lv_obj name="disk" width="228" style_bg_color="#1a1a1a" style_border_color="#3a3a3a" style_border_width="1" style_radius="6" style_pad_top="6" style_pad_bottom="6" style_pad_left="10" style_pad_right="10" style_pad_row="4">
+      <lv_label name="disk_name" text="Disk" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.10"/>
+      <lv_obj name="disk_usage" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_bar name="disk_bar" width="110" height="7" min_value="0" max_value="100" style_radius="4" style_bg_color="#3a3a3a" style_bg_color-indicator="#ff6a00" bind_value="face.13"/>
+        <lv_label name="disk_usage_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.11"/>
+      </lv_obj>
+      <lv_obj name="disk_temp" width="208" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_bg_opa="0" style_pad_all="0" style_pad_column="6">
+        <lv_label name="disk_temp_key" text="Temp" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_label name="disk_temp_value" text="--" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.12"/>
+      </lv_obj>
+    </lv_obj>
+  </view>
+</screen>
