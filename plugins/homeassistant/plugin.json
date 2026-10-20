@@ -1,0 +1,50 @@
+{
+  "id": "example.homeassistant",
+  "name": "Home Assistant",
+  "version": "0.1.0",
+  "api_version": 1,
+  "description": "Controls Home Assistant on your network by voice, and four favorites from a screen.",
+  "entry": "homeassistant",
+  "ui": {
+    "screens": [
+      "main"
+    ]
+  },
+  "settings": [
+    {"key": "ha_url", "label": "Home Assistant address", "type": "url", "placeholder": "http://192.168.1.10:8123"},
+    {"key": "ha_token", "label": "Long-lived access token", "type": "secret"},
+    {"key": "favorites", "label": "Favorites (up to 4 entity ids)", "type": "text", "placeholder": "light.kitchen, switch.fan"}
+  ],
+  "assistant_tools": [
+    {
+      "name": "control",
+      "description": "Turn a Home Assistant device on or off, or toggle it, by its name",
+      "args": {
+        "name": {"type": "string", "max": 60},
+        "action": {"type": "enum", "values": ["on", "off", "toggle"]}
+      }
+    },
+    {
+      "name": "set_level",
+      "description": "Set a light's brightness, a cover's position or a fan's speed, in percent",
+      "args": {
+        "name": {"type": "string", "max": 60},
+        "percent": {"type": "int", "min": 0, "max": 100}
+      }
+    },
+    {
+      "name": "state",
+      "description": "Say the state of a Home Assistant device or sensor, such as a lock, a door or a temperature",
+      "args": {
+        "name": {"type": "string", "max": 60}
+      }
+    },
+    {
+      "name": "scene",
+      "description": "Run a Home Assistant scene or script by its name",
+      "args": {
+        "name": {"type": "string", "max": 60}
+      }
+    }
+  ]
+}
