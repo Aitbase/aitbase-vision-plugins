@@ -1,0 +1,4 @@
+# Local build outputs
+/aida64-push-client
+/aida64-push-client.exe
+/dist/

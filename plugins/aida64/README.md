@@ -9,6 +9,7 @@ It shows what an idle face can do with the display widgets of device decision D3
 | `ui/screens/face.xml` | The face: three cards bound to `face.1` to `face.13`. 31 widgets, 5.3 KB compiled. |
 | `src/main.c` | Stops at once if started: everything is in the face. |
 | `plugin.json` | `idle_face: "face"`. |
+| `client/` | The AIDA64 push client for Windows and Linux (Go): reads the PC and pushes the face's values. See its [README](client/README.md). |
 
 ## Needs
 
@@ -24,7 +25,7 @@ aitbase-plugin pack --wasm plugins/aida64 --out dist
 
 1. Copy `dist/example.aida64-<version>.avp` into `aitbase/plugins/` on the device's SD card.
 2. On the Device Console, open **Display**, add **AIDA64** to the face cycle, and create a push token for it.
-3. Run the AIDA64 client on the PC with that token. The face fills in at the next push.
+3. Run the [AIDA64 client](client/README.md) on the PC with that token. The face fills in at the next push.
 
 The face shows the device's **Plugin** badge, like every face from the SD card.
 
