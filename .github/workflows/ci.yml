@@ -50,7 +50,6 @@ jobs:
           path: dist/*-native.zip
           if-no-files-found: error
 
-  # The same WebAssembly packages a release publishes.
   # The AIDA64 push client (plugins/aida64/client): tests, and builds for Linux and Windows.
   aida64-client:
     runs-on: ubuntu-24.04
@@ -73,5 +72,6 @@ jobs:
           go build -o /dev/null ./cmd/aida64-push-client
           GOOS=windows GOARCH=amd64 go build -o /dev/null ./cmd/aida64-push-client
 
+  # The same WebAssembly packages a release publishes.
   wasm:
     uses: ./.github/workflows/wasm-packages.yml
