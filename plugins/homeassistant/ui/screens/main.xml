@@ -1,0 +1,27 @@
+<!-- Up to four favorite entities (the "favorites" setting) as switches. LEFT moves between them,
+     RIGHT toggles one; the plugin hears AITBASE_EVENT_CHANGED and calls Home Assistant. -->
+<screen>
+  <view width="240" height="320" style_bg_color="#surface" style_pad_all="10" flex_flow="column" style_pad_row="10">
+    <lv_label name="status" width="220" text="Home Assistant" style_text_color="#accent" style_text_font="20" bind_text="title"/>
+    <lv_obj name="row1" width="220" height="52" flex_flow="row" style_flex_main_place="space_between"
+            style_flex_cross_place="center" style_bg_color="#control" style_radius="8" style_pad_all="8">
+      <lv_label name="name1" width="140" text="-" style_text_color="#on_surface" bind_text="value.1"/>
+      <lv_switch name="on1" style_bg_color-indicator="#accent" bind_checked="value.5"/>
+    </lv_obj>
+    <lv_obj name="row2" width="220" height="52" flex_flow="row" style_flex_main_place="space_between"
+            style_flex_cross_place="center" style_bg_color="#control" style_radius="8" style_pad_all="8">
+      <lv_label name="name2" width="140" text="-" style_text_color="#on_surface" bind_text="value.2"/>
+      <lv_switch name="on2" style_bg_color-indicator="#accent" bind_checked="value.6"/>
+    </lv_obj>
+    <lv_obj name="row3" width="220" height="52" flex_flow="row" style_flex_main_place="space_between"
+            style_flex_cross_place="center" style_bg_color="#control" style_radius="8" style_pad_all="8">
+      <lv_label name="name3" width="140" text="-" style_text_color="#on_surface" bind_text="value.3"/>
+      <lv_switch name="on3" style_bg_color-indicator="#accent" bind_checked="value.7"/>
+    </lv_obj>
+    <lv_obj name="row4" width="220" height="52" flex_flow="row" style_flex_main_place="space_between"
+            style_flex_cross_place="center" style_bg_color="#control" style_radius="8" style_pad_all="8">
+      <lv_label name="name4" width="140" text="-" style_text_color="#on_surface" bind_text="value.4"/>
+      <lv_switch name="on4" style_bg_color-indicator="#accent" bind_checked="value.8"/>
+    </lv_obj>
+  </view>
+</screen>
