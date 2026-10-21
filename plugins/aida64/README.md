@@ -1,12 +1,12 @@
 # AIDA64
 
-A home screen face with a PC's RAM, CPU and disk: bars, a CPU arc and labels, drawn by the device. A client on the PC pushes the numbers over the local network. The plugin has no code to speak of: the device shows the face without running it.
+A home screen face with a PC's CPU, memory and storage: bars, a CPU arc and labels, drawn by the device. It is the card the device firmware drew before AIDA64 became a plugin, pixel for pixel. A client on the PC pushes the numbers over the local network. The plugin has no code to speak of: the device shows the face without running it.
 
-It shows what an idle face can do with the display widgets of device decision D36 (`lv_bar`, `lv_arc`, flex rows, any color), fed by a face push token (D35).
+It shows what an idle face can do with the display widgets of device decision D36 (`lv_bar`, `lv_arc`, flex rows, any color, a label floating over the arc, scrolling labels, growing bars), fed by a face push token (D35).
 
 | File | Purpose |
 |---|---|
-| `ui/screens/face.xml` | The face: three cards bound to `face.1` to `face.13`. 31 widgets, 5.3 KB compiled. |
+| `ui/screens/face.xml` | The face: CPU, Memory and Storage cards bound to `face.4` to `face.16`. 29 widgets, 5.9 KB compiled. |
 | `src/main.c` | Stops at once if started: everything is in the face. |
 | `plugin.json` | `idle_face: "face"`. |
 | `client/` | The AIDA64 push client for Windows and Linux (Go): reads the PC and pushes the face's values. See its [README](client/README.md). |
@@ -14,7 +14,8 @@ It shows what an idle face can do with the display widgets of device decision D3
 ## Needs
 
 - Device firmware with D35 (face cycle, face push tokens) and D36 (display widgets). Older firmware refuses the face, and the home screen keeps its clock.
-- The SDK at `SDK_VERSION` (D36's compiler is in the SDK after 0.11.1).
+- Device firmware whose renderer has `long_mode`, `floating`, `align`, `flex_grow` and `style_arc_color` (the release after SDK 0.12.1). Older firmware refuses the face, and the home screen keeps its clock.
+- The SDK at `SDK_VERSION`, whose compiler takes those attributes.
 
 ## Install
 
@@ -35,20 +36,29 @@ A client writes these keys with the push token (`POST /api/v1/plugins/face-value
 
 | Key | Value | Example | Drawn as |
 |---|---|---|---|
-| `face.1` | RAM speed | `DDR5-5600` | label |
-| `face.2` | RAM used | `14.2GB / 32GB` | label |
-| `face.3` | RAM free | `17.8GB` | (not shown; kept for clients) |
-| `face.4` | RAM load | `45%` | label and bar |
-| `face.5` | CPU name | `Ryzen 7 7800X3D` | label |
-| `face.6` | CPU load | `12%` | label and arc |
-| `face.7` | CPU temperature | `62C` | label and bar (0–100 °C) |
+| `face.1` | RAM speed | `DDR5-5600` | (not shown) |
+| `face.2` | RAM used | `14.2GB` | (in `face.14`) |
+| `face.3` | RAM free | `17.8GB` | (in `face.14`) |
+| `face.4` | RAM load | `45%` | Memory: Load bar and value |
+| `face.5` | CPU name | `Ryzen 7 7800X3D` | (in `face.16`) |
+| `face.6` | CPU load | `12%` | the arc and the value in it |
+| `face.7` | CPU temperature | `62C` | bar (0–100 °C) and value |
 | `face.8` | CPU clock | `4850 MHz` | label |
 | `face.9` | CPU fan | `1200 RPM` | label |
-| `face.10` | Disk name | `Samsung 990 Pro` | label |
-| `face.11` | Disk usage | `1.2TB/2.0TB` | label |
-| `face.12` | Disk temperature | `41C` | label |
-| `face.13` | Disk used, percent | `60` | bar |
+| `face.10` | Disk name | `Samsung 990 Pro` | (not shown) |
+| `face.11` | Disk usage | `1.2TB/2.0TB` | (in `face.13` and `face.15`) |
+| `face.12` | Disk temperature | `41C` | (not shown) |
+| `face.13` | Disk used, percent | `60%` | Storage bar and value |
+| `face.14` | RAM "used / total" | `14.2 / 32.0 GB` | Memory: Usage |
+| `face.15` | Disk total | `2.0TB` | Storage, before the bar |
+| `face.16` | CPU header | `CPU - Ryzen 7 7800X3D` | the CPU card's title |
 
-`face.1` to `face.12` are the 12 metrics of the AIDA64 push client, in its order. `face.13` is the disk bar's percentage, which the client computes from the usage.
+`face.1` to `face.12` are the 12 metrics of the AIDA64 push client, in its order. `face.13` to `face.16` are worked out from them as the old card did; the client sends them, and so does the device's old route (`POST /api/v1/idle-screen/aida64`, kept one release):
+- `face.13`: used over total of `face.11`, rounded, with `%`.
+- `face.14`: `face.2` and `face.2 + face.3` with their unit, as whole numbers when both are, else one decimal; `face.2` alone when the units differ.
+- `face.15`: what follows the `/` in `face.11` (the whole text without one).
+- `face.16`: `CPU - ` and `face.5` (`Unknown CPU` when empty).
+
+The titles are Vietnamese (`Bộ nhớ`, `Lưu trữ`, `Sử dụng`, `Tải`), as the old card showed them in the device's default language: a face's text doesn't follow the device's language. For English, change them in `face.xml` to `Memory`, `Storage`, `Usage` and `Load`.
 
 To make it your own, change the id (for example to `yourname.aida64`) in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and point your client's token at it.

@@ -2,7 +2,7 @@
  * AIDA64: a home screen face with a PC's RAM, CPU and disk.
  *
  * The face (ui/screens/face.xml) is all there is. The device draws it without running this
- * plugin, and a client on the PC writes its values (face.1 to face.13) with a face push token
+ * plugin, and a client on the PC writes its values (face.1 to face.16) with a face push token
  * the owner creates on the Device Console. So when something starts the plugin, it has nothing
  * to do and stops at once.
  */
