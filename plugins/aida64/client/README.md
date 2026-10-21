@@ -28,7 +28,7 @@ GOOS=windows GOARCH=amd64 go build -o dist/aida64-push-client-windows-amd64.exe 
 ./aida64-push-client --device http://192.168.1.50 --token aitbase_face_... --interval 1s
 ```
 
-The token can come from `AIDA64_FACE_TOKEN` instead of `--token`. The client posts `{"values": {"face.1": ..., "face.13": ...}}` to `POST /api/v1/plugins/face-values` with `Authorization: Bearer <token>`. The keys are in the [face's README](../README.md#the-faces-values). Values are cut to 64 bytes, and control and bidi characters are dropped.
+The token can come from `AIDA64_FACE_TOKEN` instead of `--token`. The client posts `{"values": {"face.1": ..., "face.16": ...}}` to `POST /api/v1/plugins/face-values` with `Authorization: Bearer <token>`. The keys are in the [face's README](../README.md#the-faces-values). Values are cut to 64 bytes, and control and bidi characters are dropped.
 
 The device allows 2 writes a second per token (bursts of 5), so keep `--interval` at 500ms or more.
 
@@ -44,7 +44,7 @@ Enable LibreHardwareMonitor's web server (default `http://127.0.0.1:8085/data.js
 - `--device`: the device's base URL.
 - `--token`: the face push token (default `$AIDA64_FACE_TOKEN`).
 - `--interval`, `--timeout`: push interval and HTTP timeout.
-- `--storage-usage`, `--storage-path`, `--storage-disk`, `--storage-temp`: disk overrides. With `--storage-usage`, the disk bar (`face.13`) isn't sent.
+- `--storage-usage`, `--storage-path`, `--storage-disk`, `--storage-temp`: disk overrides. With `--storage-usage`, the disk bar (`face.13`) and total (`face.15`) come from that text.
 - `--cpu-name`, `--ram-speed` (`--ram-type` is a deprecated alias): overrides.
 - `--once`: send once and exit.
 - `--lhm-url`, `--lhm-file`: LibreHardwareMonitor on Windows.
