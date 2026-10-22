@@ -6,7 +6,8 @@ It shows what an idle face can do with the display widgets of device decision D3
 
 | File | Purpose |
 |---|---|
-| `ui/screens/face.xml` | The face: CPU, Memory and Storage cards bound to `face.4` to `face.16`. 29 widgets, 5.9 KB compiled. |
+| `ui/screens/face.xml` | The face: CPU, Memory and Storage cards bound to `face.4` to `face.16`, and the old card's made-up numbers until the first push. 29 widgets, 7.4 KB compiled. |
+| `ui/globals.xml` | The card's titles in English and Vietnamese. |
 | `src/main.c` | Stops at once if started: everything is in the face. |
 | `plugin.json` | `idle_face: "face"`. |
 | `client/` | The AIDA64 push client for Windows and Linux (Go): reads the PC and pushes the face's values. See its [README](client/README.md). |
@@ -14,7 +15,7 @@ It shows what an idle face can do with the display widgets of device decision D3
 ## Needs
 
 - Device firmware with D35 (face cycle, face push tokens) and D36 (display widgets). Older firmware refuses the face, and the home screen keeps its clock.
-- Device firmware whose renderer has `long_mode`, `floating`, `align`, `flex_grow` and `style_arc_color` (the release after SDK 0.12.1). Older firmware refuses the face, and the home screen keeps its clock.
+- Device firmware whose renderer has `long_mode`, `floating`, `align`, `flex_grow` and `style_arc_color` (the release after SDK 0.12.1), and, for 0.3.0, translations and face samples (SDK 0.14.0). Older firmware refuses the face, and the home screen keeps its clock.
 - The SDK at `SDK_VERSION`, whose compiler takes those attributes.
 
 ## Install
@@ -24,7 +25,7 @@ aitbase-plugin build --wasm plugins/aida64
 aitbase-plugin pack --wasm plugins/aida64 --out dist
 ```
 
-1. Copy `dist/example.aida64-<version>.avp` into `aitbase/plugins/` on the device's SD card.
+1. Copy `dist/example.aida64-<version>.avp` into `aitbase/plugins/` on the device's SD card, and delete any older `example.aida64-*.avp` there: the 0.1.0 face was a different design.
 2. On the Device Console, open **Display**, add **AIDA64** to the face cycle, and create a push token for it.
 3. Run the [AIDA64 client](client/README.md) on the PC with that token. The face fills in at the next push.
 
@@ -59,6 +60,8 @@ A client writes these keys with the push token (`POST /api/v1/plugins/face-value
 - `face.15`: what follows the `/` in `face.11` (the whole text without one).
 - `face.16`: `CPU - ` and `face.5` (`Unknown CPU` when empty).
 
-The titles are Vietnamese (`Bộ nhớ`, `Lưu trữ`, `Sử dụng`, `Tải`), as the old card showed them in the device's default language: a face's text doesn't follow the device's language. For English, change them in `face.xml` to `Memory`, `Storage`, `Usage` and `Load`.
+The titles follow the device's language, as the old card's did: `Memory`, `Usage`, `Load` and `Storage` in English, `Bộ nhớ`, `Sử dụng`, `Tải` and `Lưu trữ` in Vietnamese (`ui/globals.xml`, `translation_tag` in the face).
+
+Until the client's first push, the face shows the old card's made-up numbers, as the card did: eight samples, one a second (`<samples>` in `face.xml`). The first push replaces them for good; the device keeps the pushed values.
 
 To make it your own, change the id (for example to `yourname.aida64`) in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and point your client's token at it.
