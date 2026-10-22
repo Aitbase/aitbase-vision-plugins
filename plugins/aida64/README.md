@@ -29,7 +29,7 @@ aitbase-plugin pack --wasm plugins/aida64 --out dist
 2. On the Device Console, open **Display**, add **AIDA64** to the face cycle, and create a push token for it.
 3. Run the [AIDA64 client](client/README.md) on the PC with that token. The face fills in at the next push.
 
-The face shows the device's **Plugin** badge, like every face from the SD card.
+Device firmware from 2026-10-22 on shows the face with no badge, exactly like the old built-in card. Older firmware draws its **Plugin** badge in the top right corner, as it does on every face from the SD card.
 
 ## The face's values
 
