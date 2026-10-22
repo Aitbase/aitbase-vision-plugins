@@ -22,19 +22,19 @@
       </lv_obj>
     </lv_obj>
     <lv_obj name="memory" width="228" style_bg_color="#1a1a1a" style_border_color="#3a3a3a" style_border_width="1" style_radius="6" style_pad_top="6" style_pad_bottom="6" style_pad_left="10" style_pad_right="10" style_pad_row="4">
-      <lv_label name="memory_title" text="Bộ nhớ" style_text_font="16" style_text_color="#f0f0f0"/>
+      <lv_label name="memory_title" translation_tag="memory" style_text_font="16" style_text_color="#f0f0f0"/>
       <lv_obj name="memory_usage" width="206" flex_flow="row" style_flex_main_place="space_between" style_flex_cross_place="center" style_flex_track_place="center" style_bg_opa="0" style_border_width="0" style_radius="0" style_pad_all="0" style_pad_row="0" style_pad_column="0">
-        <lv_label name="memory_usage_key" text="Sử dụng" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_label name="memory_usage_key" translation_tag="usage" style_text_font="16" style_text_color="#a0a0a0"/>
         <lv_label name="memory_usage_value" width="140" text="--" long_mode="scroll_circular" style_text_align="right" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.14"/>
       </lv_obj>
       <lv_obj name="memory_load" width="206" flex_flow="row" style_flex_cross_place="center" style_flex_track_place="center" style_bg_opa="0" style_border_width="0" style_radius="0" style_pad_all="0" style_pad_row="0" style_pad_column="8">
-        <lv_label name="memory_load_key" text="Tải" style_text_font="16" style_text_color="#a0a0a0"/>
+        <lv_label name="memory_load_key" translation_tag="load" style_text_font="16" style_text_color="#a0a0a0"/>
         <lv_bar name="memory_load_bar" width="1" height="7" flex_grow="1" min_value="0" max_value="100" style_radius="4" style_bg_color="#3a3a3a" style_bg_color-indicator="#ff6a00" bind_value="face.4"/>
         <lv_label name="memory_load_value" text="--" long_mode="scroll_circular" style_text_align="right" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.4"/>
       </lv_obj>
     </lv_obj>
     <lv_obj name="storage" width="228" style_bg_color="#1a1a1a" style_border_color="#3a3a3a" style_border_width="1" style_radius="6" style_pad_top="6" style_pad_bottom="6" style_pad_left="10" style_pad_right="10" style_pad_row="4">
-      <lv_label name="storage_title" text="Lưu trữ" style_text_font="16" style_text_color="#f0f0f0"/>
+      <lv_label name="storage_title" translation_tag="storage" style_text_font="16" style_text_color="#f0f0f0"/>
       <lv_obj name="storage_usage" width="206" flex_flow="row" style_flex_cross_place="center" style_flex_track_place="center" style_bg_opa="0" style_border_width="0" style_radius="0" style_pad_all="0" style_pad_row="0" style_pad_column="8">
         <lv_label name="storage_total" text="--" long_mode="scroll_circular" style_text_font="16" style_text_color="#f0f0f0" bind_text="face.15"/>
         <lv_bar name="storage_bar" width="1" height="7" flex_grow="1" min_value="0" max_value="100" style_radius="4" style_bg_color="#3a3a3a" style_bg_color-indicator="#ff6a00" bind_value="face.13"/>
@@ -42,4 +42,16 @@
       </lv_obj>
     </lv_obj>
   </view>
+  <!-- Until the client's first push, the old card's made-up numbers: eight seconds of its animation,
+       there and back, one a second. face.13 to face.16 as the device's old route works them out. -->
+  <samples interval="1000">
+    <frame face.4="48%" face.6="28%" face.7="60C" face.8="4330 MHz" face.9="1220 RPM" face.13="30%" face.14="30.7 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="48%" face.6="28%" face.7="60C" face.8="4330 MHz" face.9="1227 RPM" face.13="30%" face.14="30.7 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="49%" face.6="28%" face.7="60C" face.8="4331 MHz" face.9="1234 RPM" face.13="30%" face.14="31.4 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="49%" face.6="29%" face.7="61C" face.8="4331 MHz" face.9="1241 RPM" face.13="30%" face.14="31.4 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="50%" face.6="29%" face.7="61C" face.8="4332 MHz" face.9="1248 RPM" face.13="30%" face.14="32 / 64 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="49%" face.6="29%" face.7="61C" face.8="4331 MHz" face.9="1241 RPM" face.13="30%" face.14="31.4 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="49%" face.6="28%" face.7="60C" face.8="4331 MHz" face.9="1234 RPM" face.13="30%" face.14="31.4 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+    <frame face.4="48%" face.6="28%" face.7="60C" face.8="4330 MHz" face.9="1227 RPM" face.13="30%" face.14="30.7 / 64.0 GB" face.15="2.0TB" face.16="CPU - Unknown CPU"/>
+  </samples>
 </screen>
