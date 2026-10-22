@@ -1,7 +1,7 @@
 {
   "id": "example.aida64",
   "name": "AIDA64",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "api_version": 1,
   "description": "A home screen face with a PC's RAM, CPU and disk, pushed by the AIDA64 client over the local network.",
   "entry": "aida64",
