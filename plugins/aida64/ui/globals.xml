@@ -1,0 +1,9 @@
+<globals>
+  <!-- The old card's titles, in the device's language (its idle_aida_* texts). -->
+  <translations languages="en vi">
+    <translation tag="memory" en="Memory" vi="Bộ nhớ"/>
+    <translation tag="usage" en="Usage" vi="Sử dụng"/>
+    <translation tag="load" en="Load" vi="Tải"/>
+    <translation tag="storage" en="Storage" vi="Lưu trữ"/>
+  </translations>
+</globals>
