@@ -16,7 +16,7 @@
 
 #include "aitbase_plugin.h"
 
-AITBASE_PLUGIN_ID("example.homeassistant"); /* must match "id" in plugin.json */
+AITBASE_PLUGIN_ID("community.homeassistant"); /* must match "id" in plugin.json */
 
 #define MAX_FAVORITES 4
 #define HTTP_TIMEOUT_MS 2000 /* two requests must fit in the assistant's 5 s */
@@ -94,7 +94,9 @@ static int ha_post(aitbase_plugin_t *plugin, const char *path, const char *body)
     if ((size_t)snprintf(url, sizeof(url), "%.*s%s", (int)base, g_url, path) >= sizeof(url)) return -1;
     snprintf(auth, sizeof(auth), "Authorization: Bearer %s", g_token);
     const char *headers[] = {auth, "Content-Type: application/json"};
-    aitbase_http_request_t request = {"POST", url, headers, 2, body, HTTP_TIMEOUT_MS};
+    aitbase_http_request_t request = {
+        .method = "POST", .url = url, .headers = headers, .header_count = 2, .body = body,
+        .timeout_ms = HTTP_TIMEOUT_MS};
     return aitbase_http_request(plugin, &request);
 }
 

@@ -28,15 +28,15 @@ aitbase-plugin build --wasm plugins/stopwatch
 aitbase-plugin pack --wasm plugins/stopwatch --out dist
 ```
 
-Copy `dist/example.stopwatch-<version>.avp` into `aitbase/plugins/` on the device's SD card, or, with a paired device, run `aitbase-plugin dev plugins/stopwatch`. Its log is `aitbase/logs/example.stopwatch.log` on the card, or `aitbase-plugin logs plugins/stopwatch`.
+Copy `dist/community.stopwatch-<version>.avp` into `aitbase/plugins/` on the device's SD card, or, with a paired device, run `aitbase-plugin dev plugins/stopwatch`. Its log is `aitbase/logs/community.stopwatch.log` on the card, or `aitbase-plugin logs plugins/stopwatch`.
 
-To make it your own, change the id, for example to `yourname.stopwatch`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`.
+To make it your own, give it a name of your own in the `community.*` namespace, for example `community.my_stopwatch`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`. To run a changed build under the same id, `community.stopwatch`, first forget the plugin in the Device Console: the device keeps running the id with the key that signed it first.
 
 ## What you should see
 
 1. The screen shows `00:00.0` and `Stopped`.
 2. RIGHT: the time runs and the state says `Running`. RIGHT again stops it.
-3. LEFT while running: `Lap 1: 00:04.2` appears, and the log has `[example.stopwatch] info: Lap 1: 00:04.2`.
+3. LEFT while running: `Lap 1: 00:04.2` appears, and the log has `[community.stopwatch] info: Lap 1: 00:04.2`.
 4. Hold RIGHT: back to `00:00.0`, `Stopped`, no lap.
 5. A LEFT long press, or the voice assistant starting, closes the screen. The plugin logs `screen preempted` and exits.
 

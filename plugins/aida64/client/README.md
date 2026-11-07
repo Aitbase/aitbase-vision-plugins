@@ -10,7 +10,7 @@ A small Go program for Windows and Linux that reads the PC's RAM, CPU and disk a
 - The disk's name from the mounted partition.
 
 ## Set up
-1. Install `example.aida64` on the device's SD card and add **AIDA64** to the face cycle on the Device Console (**Display**).
+1. Install `community.aida64` on the device's SD card and add **AIDA64** to the face cycle on the Device Console (**Display**).
 2. On the same page, under **Push tokens**, create a token for AIDA64 and copy it. It is shown once.
 3. Run the client with it.
 

@@ -1,5 +1,5 @@
 {
-  "id": "example.homeassistant",
+  "id": "community.homeassistant",
   "name": "Home Assistant",
   "version": "0.1.0",
   "api_version": 1,

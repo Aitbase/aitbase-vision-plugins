@@ -19,9 +19,9 @@ aitbase-plugin build --wasm plugins/counter
 aitbase-plugin pack --wasm plugins/counter --out dist
 ```
 
-Copy `dist/example.counter-<version>.avp` into `aitbase/plugins/` on the device's SD card. The device checks the signature and starts the plugin after the card mounts. Its log is `aitbase/logs/example.counter.log` on the card.
+Copy `dist/community.counter-<version>.avp` into `aitbase/plugins/` on the device's SD card. The device checks the signature and starts the plugin after the card mounts. Its log is `aitbase/logs/community.counter.log` on the card.
 
-To make it your own, change the id, for example to `yourname.counter`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`. Devices refuse `aitbase.*` ids on the SD card: that namespace is for official plugins, which ship in the firmware.
+To make it your own, give it a name of your own in the `community.*` namespace, for example `community.my_counter`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`. To run a changed build under the same id, `community.counter`, first forget the plugin in the Device Console: the device keeps running the id with the key that signed it first. Devices refuse `aitbase.*` ids on the SD card: that namespace is for official plugins, which ship in the firmware.
 
 ## What you should see
 
@@ -29,4 +29,4 @@ To make it your own, change the id, for example to `yourname.counter`, in `plugi
 2. Each RIGHT press adds 1 to the count.
 3. A LEFT long press, or the voice assistant starting, closes the screen. The plugin then logs `screen preempted` and exits.
 
-The plugin's log lines look like `[example.counter] info: increment -> 1`.
+The plugin's log lines look like `[community.counter] info: increment -> 1`.

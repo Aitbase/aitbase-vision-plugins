@@ -8,7 +8,7 @@
  */
 #include "aitbase_plugin.h"
 
-AITBASE_PLUGIN_ID("example.aida64");
+AITBASE_PLUGIN_ID("community.aida64");
 
 int aitbase_on_start(aitbase_plugin_t *plugin) {
     aitbase_log(plugin, AITBASE_LOG_INFO, "a face only: the AIDA64 client fills it in");

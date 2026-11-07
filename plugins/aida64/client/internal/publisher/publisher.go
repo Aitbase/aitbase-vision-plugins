@@ -1,4 +1,4 @@
-// Package publisher writes the metrics into the device's AIDA64 face (example.aida64) with a face
+// Package publisher writes the metrics into the device's AIDA64 face (community.aida64) with a face
 // push token (device decision D35): POST /api/v1/plugins/face-values, Authorization: Bearer.
 package publisher
 
