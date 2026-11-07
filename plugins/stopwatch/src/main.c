@@ -16,7 +16,7 @@
 
 #include "aitbase_plugin.h"
 
-AITBASE_PLUGIN_ID("example.stopwatch");
+AITBASE_PLUGIN_ID("community.stopwatch");
 
 /* Names from ui/screens/stopwatch.xml. */
 #define SCREEN "stopwatch"

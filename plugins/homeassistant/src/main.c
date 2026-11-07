@@ -16,7 +16,7 @@
 
 #include "aitbase_plugin.h"
 
-AITBASE_PLUGIN_ID("example.homeassistant"); /* must match "id" in plugin.json */
+AITBASE_PLUGIN_ID("community.homeassistant"); /* must match "id" in plugin.json */
 
 #define MAX_FAVORITES 4
 #define HTTP_TIMEOUT_MS 2000 /* two requests must fit in the assistant's 5 s */

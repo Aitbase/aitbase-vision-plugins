@@ -18,7 +18,7 @@ aitbase-plugin build --wasm plugins/weather
 aitbase-plugin pack --wasm plugins/weather --out dist
 ```
 
-Copy `dist/example.weather-<version>.avp` into `aitbase/plugins/` on the device's SD card, or, with a paired device, run `aitbase-plugin dev plugins/weather`. Its log is `aitbase/logs/example.weather.log` on the card, or `aitbase-plugin logs plugins/weather`.
+Copy `dist/community.weather-<version>.avp` into `aitbase/plugins/` on the device's SD card, or, with a paired device, run `aitbase-plugin dev plugins/weather`. Its log is `aitbase/logs/community.weather.log` on the card, or `aitbase-plugin logs plugins/weather`.
 
 ## What you should see
 
@@ -27,4 +27,4 @@ Copy `dist/example.weather-<version>.avp` into `aitbase/plugins/` on the device'
 3. Ask the assistant "what's the weather in Hanoi?" (or "ask the weather plugin about Hanoi"). It answers with the plugin's line. The log shows the run started with trigger `assistant`, and it ends about 2 s after the reply.
 4. The device needs internet access. If wttr.in doesn't answer within the 5 s the device allows, the assistant says the plugin didn't answer in time.
 
-To make it your own, change the id, for example to `yourname.weather`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`.
+To make it your own, give it a name of your own in the `community.*` namespace, for example `community.my_weather`, in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`. To run a changed build under the same id, `community.weather`, first forget the plugin in the Device Console: the device keeps running the id with the key that signed it first.

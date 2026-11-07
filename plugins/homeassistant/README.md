@@ -16,7 +16,7 @@ Needs:
    4. Copy the token; HA shows it only once.
 
    Use a dedicated user: the token is kept on the device's SD card, and anyone with the card can read it.
-2. **On the SD card:** copy `example.homeassistant-<version>.avp` into `aitbase/plugins/`.
+2. **On the SD card:** copy `community.homeassistant-<version>.avp` into `aitbase/plugins/`.
 3. **On the Device Console,** under **Plugins**, **Settings: Home Assistant**, fill in:
    - **Home Assistant address:** for example `http://192.168.1.10:8123`. Use the IP address: the device may not resolve `homeassistant.local`.
    - **Long-lived access token:** saving it asks for the Device Console password. It is never shown again.

@@ -27,13 +27,13 @@ git clone https://github.com/Aitbase/aitbase-vision-plugins.git
 cd aitbase-vision-plugins
 
 aitbase-plugin build --wasm plugins/counter
-aitbase-plugin pack --wasm plugins/counter   # plugins/counter/dist/example.counter-<version>.avp
+aitbase-plugin pack --wasm plugins/counter   # plugins/counter/dist/community.counter-<version>.avp
 ```
 
 Copy the `.avp` into `aitbase/plugins/` on the device's SD card, and the device runs it. `pack --wasm` refuses a module the device would refuse, for example one that uses files or sockets, and signs the package with your key (see `aitbase-plugin key`).
 
 - **The SDK:** the one built into the CLI ([Which SDK](https://github.com/Aitbase/aitbase-vision-plugin-sdk/blob/main/docs/cli.md#which-sdk)). CI pins it in `SDK_VERSION`; `aitbase-plugin version` shows yours.
-- **Ids:** the examples use the `example.*` namespace. Devices refuse `aitbase.*` ids on the SD card; that namespace is for official plugins, which ship in the firmware.
+- **Ids:** community plugins use the `community.*` namespace, these and your own (`community.<your plugin>`). Devices refuse `aitbase.*` ids on the SD card; that namespace is for official plugins, which ship in the firmware. A device runs an id with the key that signed it first: to install your own changed build of one of these under its id, forget the plugin in the Device Console first, or give yours a new name.
 
 ### Other builds
 

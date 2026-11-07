@@ -25,7 +25,7 @@ aitbase-plugin build --wasm plugins/aida64
 aitbase-plugin pack --wasm plugins/aida64 --out dist
 ```
 
-1. Copy `dist/example.aida64-<version>.avp` into `aitbase/plugins/` on the device's SD card, and delete any older `example.aida64-*.avp` there: the 0.1.0 face was a different design.
+1. Copy `dist/community.aida64-<version>.avp` into `aitbase/plugins/` on the device's SD card, and delete any older `community.aida64-*.avp` there: the 0.1.0 face was a different design.
 2. On the Device Console, open **Display**, add **AIDA64** to the face cycle, and create a push token for it.
 3. Run the [AIDA64 client](client/README.md) on the PC with that token. The face fills in at the next push.
 
@@ -64,4 +64,4 @@ The titles follow the device's language, as the old card's did: `Memory`, `Usage
 
 Until the client's first push, the face shows the old card's made-up numbers, as the card did: eight samples, one a second (`<samples>` in `face.xml`). The first push replaces them for good; the device keeps the pushed values.
 
-To make it your own, change the id (for example to `yourname.aida64`) in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and point your client's token at it.
+To make it your own, give it a name of your own in the `community.*` namespace (for example `community.my_aida64`) in `plugin.json` and in `AITBASE_PLUGIN_ID` in `src/main.c`, and point your client's token at it. To run a changed build under the same id, first forget the plugin in the Device Console: the device keeps running the id with the key that signed it first.
